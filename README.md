@@ -21,13 +21,15 @@ This approach leverages PSD2-compliant services for SEPA (Single Euro Payments A
 
 The fundamental principle involves leveraging HCE (Host Card Emulation) to facilitate payments, with data transmitted via NFC in the following flow:
 
-Device (HCE) <==> NFC <==> Terminal
+Smartphone (HCE) <==> NFC <==> Terminal
 
 The bank-end processing would look something like this:
 
-Device <==> Negoication of Type of Payment, details etc. <==> Terminal
-Device Backend ==> PSD2 Bank Backend ==> Bank Transfer initiation ==> Negociation Server ==> Notification of Bank Transfer
-Terminal Backend ==> PSD2 Negociation Server ==> Await Transfer Success
+Smartphone <==> Negotiation of Type of Payment, details etc. <==> Terminal
+Smartphone Backend ==> PSD2 Bank Backend ==> Bank Transfer initiation ==> Negotiation Server ==> Notification of Bank Transfer
+Terminal Backend ==> PSD2 Negotiation Server ==> Await Transfer Success
+
+The Negotiation Server could be hosted by the PSD2 provider or by the Merchant. 
 
 This would require the use of either same-bank, SEPA or other instant transfer providers (like ELIXIR in Poland)
 
@@ -41,7 +43,7 @@ However, if achievable, this implementation would closely resemble Google Pay or
 
 Similarily to above, the fundamental principle involves leveraging HCE (Host Card Emulation) to facilitate payments:
 
-Device (HCE) <==> NFC <==> Terminal
+Smartphone (HCE) <==> NFC <==> Terminal
 
 
 After data transmission, the payment process would proceed via secure backend systems, similar to existing mobile payment platforms so:

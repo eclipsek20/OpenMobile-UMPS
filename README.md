@@ -15,9 +15,23 @@ The Universal Mobile Payment System (UMPS for short) seeks to make mobile paymen
 
 One of the main challenges with this project (and similar ones) is that financial institutions are understandably cautious when adopting new technologies. Fortunately, in the UK and EU, PSD2 (Revised Payment Services Directive) opens exciting opportunities for innovation. However, this framework does not cover the global market. Below are potential implementation strategies for this project:
 
-### **1. NFC & QR Code with PSD2 SEPA/Local Transfers (Current Vision)**
+### **1. NFC with PSD2 SEPA/Local Transfers (Current Vision)**
 
-This approach leverages PSD2-compliant services for SEPA (Single Euro Payments Area) or local transfers, utilizing either NFC or QR codes for user-friendly payment interactions.
+This approach leverages PSD2-compliant services for SEPA (Single Euro Payments Area) or local transfers, utilizing either NFC or QR codes for user-friendly payment interactions, this is the most likely approach, but a third-party certified service provider would be needed. 
+
+The fundamental principle involves leveraging HCE (Host Card Emulation) to facilitate payments, with data transmitted via NFC in the following flow:
+
+Device (HCE) <==> NFC <==> Terminal
+
+The bank-end processing would look something like this:
+
+Device <==> Negoication of Type of Payment, details etc. <==> Terminal
+Device Backend ==> PSD2 Bank Backend ==> Bank Transfer initiation ==> Negociation Server ==> Notification of Bank Transfer
+Terminal Backend ==> PSD2 Negociation Server ==> Await Transfer Success
+
+This would require the use of either same-bank, SEPA or other instant transfer providers (like ELIXIR in Poland)
+
+
 
 ### **2. NFC with Card Issuer Partner**
 
@@ -25,12 +39,14 @@ In my [own opinion](https://www.github.com/eclipsek20), this option is *highly* 
 
 However, if achievable, this implementation would closely resemble Google Pay or Apple Pay. [Personally](https://www.github.com/eclipsek20), I find this to be one of the most promising approaches.
 
-The fundamental principle involves leveraging HCE (Host Card Emulation) to facilitate payments, with data transmitted via NFC in the following flow:
+Similarily to above, the fundamental principle involves leveraging HCE (Host Card Emulation) to facilitate payments:
 
 Device (HCE) <==> NFC <==> Terminal
 
 
-After data transmission, the payment process would proceed via secure backend systems, similar to existing mobile payment platforms.
+After data transmission, the payment process would proceed via secure backend systems, similar to existing mobile payment platforms so:
+
+Terminmal <===> Backend <===> Card Issiuer <===> Bank
 
 ## Technical Description
 

@@ -2,7 +2,11 @@ module eclipsek20/umps-negotiation
 
 go 1.24.3
 
-require github.com/gin-gonic/gin v1.10.0
+require (
+	github.com/gin-gonic/gin v1.10.0
+	github.com/jmoiron/sqlx v1.4.0
+	github.com/mattn/go-sqlite3 v1.14.28
+)
 
 require (
 	github.com/bytedance/sonic v1.11.6 // indirect

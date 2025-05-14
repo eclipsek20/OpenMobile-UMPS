@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "UMPS Terminal Demo"
 include(":app")
+ 

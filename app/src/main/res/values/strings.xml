@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">UMPS Terminal Demo</string>
+    <string name="aid_hce_applet_id">F22334455668</string>
+    <string name="aid_hce_applet_description">UMPS HCE PSD2 Applet</string>
+    <string name="service_description">UMPS HCE Service\n</string>
 </resources>

@@ -50,6 +50,10 @@ After data transmission, the payment process would proceed via secure backend sy
 
 Terminmal <===> Backend <===> Card Issiuer <===> Bank
 
+### **3. Self-Hosted NFC Card relay**
+
+As the title states, this is the most simple implemenation that can be done, if you had a reader online 24/7 at home, and ran via a server a nfc connection you could get google pay wirelessly, the only minus is that you need to self-host it and it needs to be always online (which to be fair implemenation #1 also suffers from this, although this could be changed)
+
 ## Technical Description
 
 TBD

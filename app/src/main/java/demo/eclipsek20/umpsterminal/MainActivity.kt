@@ -38,14 +38,15 @@ val TAG = "UMPS Main Activity"
 class MainActivity : ComponentActivity() {
     private var mNfcAdapter: NfcAdapter? = null
     private lateinit var basicReader: BasicReader
-    var tagStatus = mutableStateOf("No Tag Detected")
+    val tagStatus = mutableStateOf("Ready to read")
+    val tagStatusTime = mutableStateOf(System.currentTimeMillis() / 1000)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        basicReader = BasicReader(this, tagStatus)
+        basicReader = BasicReader(this, tagStatus, tagStatusTime)
         val intent = Intent(this, MyHostApduService::class.java)
         // Toast.makeText(this, "The HCE Service is started", Toast.LENGTH_SHORT).show()
         startService(intent)
@@ -57,6 +58,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainUI(
                         getStatus = { tagStatus.value },
+                        getStatusTime = { tagStatusTime.value },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -98,7 +100,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainUI(modifier: Modifier = Modifier, getStatus: () -> String) {
+fun MainUI(modifier: Modifier = Modifier, getStatus: () -> String, getStatusTime: () -> Long) {
     Box(
         modifier = modifier.fillMaxSize()
     ) {
@@ -107,7 +109,7 @@ fun MainUI(modifier: Modifier = Modifier, getStatus: () -> String) {
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             GreetingUI()
-            StatusUI(getStatus = getStatus)
+            StatusUI(getStatus = getStatus, getStatusTime = getStatusTime)
         }
     }
 }
@@ -130,11 +132,15 @@ fun GreetingUI(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun StatusUI(modifier: Modifier = Modifier, getStatus: () -> String) {
+fun StatusUI(modifier: Modifier = Modifier, getStatus: () -> String, getStatusTime: () -> Long) {
     var status by remember { mutableStateOf(getStatus()) }
+    var time_status_update by remember { mutableStateOf(getStatusTime()) }
     LaunchedEffect(Unit) {
         while (true) {
             status = getStatus()
+            time_status_update = getStatusTime()
+            var time_since_status_update = System.currentTimeMillis() / 1000 - time_status_update
+            status = status + " (" + time_since_status_update + "s ago)"
             kotlinx.coroutines.delay(1000)
         }
     }
@@ -147,7 +153,7 @@ fun StatusUI(modifier: Modifier = Modifier, getStatus: () -> String) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Current Status:",
+                text = "Last Status:",
                 modifier = Modifier.padding(8.dp)
             )
             Text(
@@ -160,7 +166,7 @@ fun StatusUI(modifier: Modifier = Modifier, getStatus: () -> String) {
 
 
 
-@SuppressLint("UnrememberedMutableState")
+/* @SuppressLint("UnrememberedMutableState")
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
@@ -168,7 +174,7 @@ fun GreetingPreview() {
         var tagStatus = mutableStateOf("No Tag Detected")
         MainUI(getStatus = { tagStatus.value })
     }
-}
+} */
 
 class MyHostApduService : HostApduService() {
     override fun processCommandApdu(commandApdu: ByteArray?, bundle: Bundle?): ByteArray? {
@@ -181,40 +187,17 @@ class MyHostApduService : HostApduService() {
 
 class BasicReader(
     private val context: Context,
-    private val tagStatus:  androidx.compose.runtime.MutableState<String>
+    private val tagStatus:  androidx.compose.runtime.MutableState<String>,
+    private val tagStatusTime:  androidx.compose.runtime.MutableState<Long>
 ) : NfcAdapter.ReaderCallback {
-    private var stopPolling = false
 
     override fun onTagDiscovered(tag: Tag?) {
         (context as? MainActivity)?.runOnUiThread {
             Toast.makeText(context, "NFC Tag Discovered!", Toast.LENGTH_SHORT).show()
             tagStatus.value = "Tag Detected"
-        }
-
-
-        tag?.let {
-            stopPolling = false
-            Thread {
-                try {
-                    val tech = android.nfc.tech.NfcA.get(it)
-                    tech.connect()
-                    while (!stopPolling && tech.isConnected) {
-                        Thread.sleep(500)
-                    }
-                    tech.close()
-                } catch (e: Exception) {
-                    // Tag removed or error
-                }
-                (context as? MainActivity)?.runOnUiThread {
-                    Toast.makeText(context, "NFC Tag Removed!", Toast.LENGTH_SHORT).show()
-                    tagStatus.value = "No Tag Detected"
-                }
-            }.start()
+            tagStatusTime.value = System.currentTimeMillis() / 1000
         }
     }
 
-    fun stopPolling() {
-        stopPolling = true
-    }
 }
 

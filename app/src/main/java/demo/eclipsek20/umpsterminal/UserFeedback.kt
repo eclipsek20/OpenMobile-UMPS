@@ -1,6 +1,5 @@
 package demo.eclipsek20.umpsterminal
 
-import demo.eclipsek20.umpsterminal.R
 import android.content.Context
 import android.media.MediaPlayer
 import android.os.VibrationEffect

@@ -1,6 +1,5 @@
 package demo.eclipsek20.umpsterminal
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.nfc.NfcAdapter
@@ -12,28 +11,12 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import demo.eclipsek20.umpsterminal.ui.theme.UMPSTerminalDemoTheme
-
-val TAG = "UMPS Main Activity"
 
 class MainActivity : ComponentActivity() {
     private var mNfcAdapter: NfcAdapter? = null
@@ -94,7 +77,7 @@ class MainActivity : ComponentActivity() {
 
     private fun showWirelessSettings() {
         Toast.makeText(this, "You need to enable NFC", Toast.LENGTH_SHORT).show()
-        val intent: Intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+        val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
         startActivity(intent)
     }
 }
@@ -116,7 +99,8 @@ class BasicReader(
 
     override fun onTagDiscovered(tag: Tag?) {
         (context as? MainActivity)?.runOnUiThread {
-            Toast.makeText(context, "NFC Tag Discovered!", Toast.LENGTH_SHORT).show()
+            // Toast.makeText(context, "NFC Tag Discovered!", Toast.LENGTH_SHORT).show()
+            playSinglePing(context)
             tagStatus.value = "Tag Detected"
             tagStatusTime.value = System.currentTimeMillis() / 1000
         }
